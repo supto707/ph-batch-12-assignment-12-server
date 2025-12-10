@@ -10,7 +10,10 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({ 
+  origin: 'https://ph-batch-12-assignment-12-client.vercel.app', 
+  credentials: true 
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -41,10 +44,51 @@ app.get('/api/products/home', async (req, res) => {
 app.get('/api/products', async (req, res) => {
   try {
     await client.connect();
-    const products = await client.db('garmentsTracker').collection('products').find({}).toArray();
+    const { search } = req.query;
+    let query = {};
+    if (search) query.name = { $regex: search, $options: 'i' };
+    const products = await client.db('garmentsTracker').collection('products').find(query).toArray();
     res.json(products);
   } catch (error) {
     res.json([]);
+  }
+});
+
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email } = req.body;
+    const token = jwt.sign({ email }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none'
+    }).json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    await client.connect();
+    const user = { ...req.body, status: 'approved', createdAt: new Date() };
+    await client.db('garmentsTracker').collection('users').insertOne(user);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/users/me', async (req, res) => {
+  try {
+    const token = req.cookies?.token;
+    if (!token) return res.status(401).json({ message: 'Unauthorized' });
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret');
+    await client.connect();
+    const user = await client.db('garmentsTracker').collection('users').findOne({ email: decoded.email });
+    res.json(user);
+  } catch (error) {
+    res.status(401).json({ message: 'Unauthorized' });
   }
 });
 
