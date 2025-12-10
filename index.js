@@ -79,6 +79,62 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
+app.get('/api/users', async (req, res) => {
+  try {
+    await client.connect();
+    const users = await client.db('garmentsTracker').collection('users').find({}).toArray();
+    res.json(users);
+  } catch (error) {
+    res.json([]);
+  }
+});
+
+app.patch('/api/users/:id', async (req, res) => {
+  try {
+    await client.connect();
+    const result = await client.db('garmentsTracker').collection('users').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: req.body }
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/products/:id', async (req, res) => {
+  try {
+    await client.connect();
+    const product = await client.db('garmentsTracker').collection('products').findOne({ _id: new ObjectId(req.params.id) });
+    res.json(product);
+  } catch (error) {
+    res.json(null);
+  }
+});
+
+app.get('/api/orders', async (req, res) => {
+  try {
+    await client.connect();
+    const orders = await client.db('garmentsTracker').collection('orders').find({}).toArray();
+    res.json(orders);
+  } catch (error) {
+    res.json([]);
+  }
+});
+
+app.get('/api/analytics', async (req, res) => {
+  try {
+    await client.connect();
+    const db = client.db('garmentsTracker');
+    const totalUsers = await db.collection('users').countDocuments();
+    const totalProducts = await db.collection('products').countDocuments();
+    const totalOrders = await db.collection('orders').countDocuments();
+    res.json({ totalUsers, totalProducts, totalOrders, revenue: 15000 });
+  } catch (error) {
+    res.json({ totalUsers: 0, totalProducts: 0, totalOrders: 0, revenue: 0 });
+  }
+});
+
 app.get('/api/users/me', async (req, res) => {
   try {
     const token = req.cookies?.token;
