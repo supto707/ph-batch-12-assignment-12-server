@@ -96,6 +96,14 @@ app.get('/api/users/me', async (req, res) => {
 client.connect().then(async () => {
   const db = client.db('garmentsTracker');
   
+  // Clear and seed users
+  await db.collection('users').deleteMany({});
+  await db.collection('users').insertMany([
+    { name: "Admin User", email: "admin123@gmail.com", role: "admin", status: "approved", createdAt: new Date() },
+    { name: "Manager User", email: "manager123@gmail.com", role: "manager", status: "approved", createdAt: new Date() },
+    { name: "Buyer User", email: "buyer123@gmail.com", role: "buyer", status: "approved", createdAt: new Date() }
+  ]);
+  
   // Clear and seed products
   await db.collection('products').deleteMany({});
   await db.collection('products').insertMany([
