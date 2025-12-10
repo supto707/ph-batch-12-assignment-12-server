@@ -99,33 +99,27 @@ client.connect().then(async () => {
   // Clear and seed products
   await db.collection('products').deleteMany({});
   await db.collection('products').insertMany([
-    {
-      name: "Premium Cotton T-Shirt",
-      description: "High-quality cotton t-shirt",
-      category: "Shirt",
-      price: 25.99,
-      quantity: 100,
-      images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"],
-      showOnHome: true
-    },
-    {
-      name: "Denim Jeans",
-      description: "Classic blue denim jeans",
-      category: "Pant", 
-      price: 45.99,
-      quantity: 75,
-      images: ["https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"],
-      showOnHome: true
-    },
-    {
-      name: "Winter Jacket",
-      description: "Warm winter jacket",
-      category: "Jacket",
-      price: 89.99,
-      quantity: 50,
-      images: ["https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400"],
-      showOnHome: true
-    }
+    { name: "Premium Cotton T-Shirt", description: "High-quality cotton t-shirt", category: "Shirt", price: 25.99, quantity: 100, images: ["https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400"], showOnHome: true },
+    { name: "Denim Jeans", description: "Classic blue denim jeans", category: "Pant", price: 45.99, quantity: 75, images: ["https://images.unsplash.com/photo-1542272604-787c3835535d?w=400"], showOnHome: true },
+    { name: "Winter Jacket", description: "Warm winter jacket", category: "Jacket", price: 89.99, quantity: 50, images: ["https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400"], showOnHome: true },
+    { name: "Formal Shirt", description: "Professional formal shirt", category: "Shirt", price: 35.99, quantity: 80, images: ["https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=400"], showOnHome: true },
+    { name: "Cargo Pants", description: "Comfortable cargo pants", category: "Pant", price: 39.99, quantity: 60, images: ["https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=400"], showOnHome: true },
+    { name: "Leather Belt", description: "Genuine leather belt", category: "Accessories", price: 19.99, quantity: 200, images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400"], showOnHome: true },
+    { name: "Polo Shirt", description: "Classic polo shirt", category: "Shirt", price: 28.99, quantity: 90, images: ["https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=400"], showOnHome: false },
+    { name: "Chino Pants", description: "Stylish chino pants", category: "Pant", price: 42.99, quantity: 70, images: ["https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=400"], showOnHome: false },
+    { name: "Hoodie", description: "Comfortable hoodie", category: "Jacket", price: 55.99, quantity: 65, images: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=400"], showOnHome: false },
+    { name: "Baseball Cap", description: "Adjustable baseball cap", category: "Accessories", price: 15.99, quantity: 150, images: ["https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400"], showOnHome: false },
+    { name: "V-Neck Sweater", description: "Warm v-neck sweater", category: "Jacket", price: 65.99, quantity: 45, images: ["https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400"], showOnHome: false },
+    { name: "Skinny Jeans", description: "Trendy skinny jeans", category: "Pant", price: 48.99, quantity: 85, images: ["https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400"], showOnHome: false },
+    { name: "Button-Down Shirt", description: "Classic button-down shirt", category: "Shirt", price: 32.99, quantity: 95, images: ["https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400"], showOnHome: false },
+    { name: "Track Pants", description: "Athletic track pants", category: "Pant", price: 36.99, quantity: 110, images: ["https://images.unsplash.com/photo-1506629905607-d9c8e3b8c6b4?w=400"], showOnHome: false },
+    { name: "Bomber Jacket", description: "Stylish bomber jacket", category: "Jacket", price: 78.99, quantity: 40, images: ["https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400"], showOnHome: false },
+    { name: "Leather Wallet", description: "Premium leather wallet", category: "Accessories", price: 24.99, quantity: 180, images: ["https://images.unsplash.com/photo-1627123424574-724758594e93?w=400"], showOnHome: false },
+    { name: "Henley Shirt", description: "Casual henley shirt", category: "Shirt", price: 29.99, quantity: 75, images: ["https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400"], showOnHome: false },
+    { name: "Shorts", description: "Summer shorts", category: "Pant", price: 22.99, quantity: 120, images: ["https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=400"], showOnHome: false },
+    { name: "Cardigan", description: "Cozy cardigan", category: "Jacket", price: 58.99, quantity: 55, images: ["https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400"], showOnHome: false },
+    { name: "Sunglasses", description: "Stylish sunglasses", category: "Accessories", price: 18.99, quantity: 160, images: ["https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400"], showOnHome: false },
+    { name: "Tank Top", description: "Comfortable tank top", category: "Shirt", price: 16.99, quantity: 130, images: ["https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400"], showOnHome: false }
   ]);
   
   console.log('Products seeded');
