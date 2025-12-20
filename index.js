@@ -135,6 +135,21 @@ app.get('/api/analytics', async (req, res) => {
   }
 });
 
+app.post('/api/orders', async (req, res) => {
+  try {
+    await client.connect();
+    const order = {
+      ...req.body,
+      status: 'pending',
+      createdAt: new Date()
+    };
+    const result = await client.db('garmentsTracker').collection('orders').insertOne(order);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get('/api/users/me', async (req, res) => {
   try {
     const token = req.cookies?.token;
