@@ -150,6 +150,29 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 
+app.patch('/api/orders/:id', async (req, res) => {
+  try {
+    await client.connect();
+    const result = await client.db('garmentsTracker').collection('orders').updateOne(
+      { _id: new ObjectId(req.params.id) },
+      { $set: req.body }
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/orders/:id', async (req, res) => {
+  try {
+    await client.connect();
+    const order = await client.db('garmentsTracker').collection('orders').findOne({ _id: new ObjectId(req.params.id) });
+    res.json(order);
+  } catch (error) {
+    res.json(null);
+  }
+});
+
 app.get('/api/users/me', async (req, res) => {
   try {
     const token = req.cookies?.token;
