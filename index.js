@@ -263,14 +263,35 @@ app.get('/api/analytics', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
   try {
+    const { productId, quantity } = req.body;
     await client.connect();
+    const db = client.db('garmentsTracker');
+
+    // 1. Check stock
+    const product = await db.collection('products').findOne({ _id: new ObjectId(productId) });
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    if (product.quantity < quantity) {
+      return res.status(400).json({ error: 'Insufficient stock' });
+    }
+
+    // 2. Create order
     const order = {
       ...req.body,
       status: 'pending',
       createdAt: new Date()
     };
-    const result = await client.db('garmentsTracker').collection('orders').insertOne(order);
-    res.json(result);
+    const orderResult = await db.collection('orders').insertOne(order);
+
+    // 3. Decrement stock
+    await db.collection('products').updateOne(
+      { _id: new ObjectId(productId) },
+      { $inc: { quantity: -parseInt(quantity) } }
+    );
+
+    res.json(orderResult);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -279,9 +300,24 @@ app.post('/api/orders', async (req, res) => {
 app.patch('/api/orders/:id', async (req, res) => {
   try {
     await client.connect();
-    const result = await client.db('garmentsTracker').collection('orders').updateOne(
-      { _id: new ObjectId(req.params.id) },
-      { $set: req.body }
+    const db = client.db('garmentsTracker');
+    const orderId = new ObjectId(req.params.id);
+    const updates = req.body;
+
+    // If cancelling, restore stock
+    if (updates.status === 'cancelled') {
+      const order = await db.collection('orders').findOne({ _id: orderId });
+      if (order && order.status !== 'cancelled') {
+        await db.collection('products').updateOne(
+          { _id: new ObjectId(order.productId) },
+          { $inc: { quantity: parseInt(order.quantity) } }
+        );
+      }
+    }
+
+    const result = await db.collection('orders').updateOne(
+      { _id: orderId },
+      { $set: updates }
     );
     res.json(result);
   } catch (error) {
